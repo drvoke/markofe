@@ -4,11 +4,30 @@ from argparse import ArgumentParser
 import os
 
 
+#def loadOptionsFile(filename):
+#    optfile = loadTextFile(filename)
+#    options = {}
+    # optfile = {opt[0]:opt[1] for opt in [optline.split('=') for optline in splitlines(loadTextFile(filename))]}
+#    for optline in splitlines(optfile):
+#        opts = optline.split('=')
+#        options[opts[0]] = opts[1]
+#    return options
+    # [['arg1', 'val1'], ['arg2', 'val2'], ['arg3', val3']]
+
+
 def loadTextFile(filename):
     with open(filename, 'r') as f:
         return f.read()
 
 
+def parseArgs(parser):
+    args = parser.parse_args()
+    if args.config_file:
+        args = parser.parse_args(loadTextFile(args.config_file).splitlines(), namespace=args)
+    print args
+    return args
+    
+    
 def getArgParser():
     parser = ArgumentParser(description='Parse some text (or use a pre-generated model) using markovify to generate sentences.')
     parser.add_argument('-n', '--newline',
@@ -60,9 +79,9 @@ def getArgParser():
                         default=15,
                         help='Indicates the max_overlap_total of the generated sentences (see markovify docs for more \
                             info). [None=default]')
-    # parser.add_argument('-c', '--config', dest='config_file', default=None,
-    #                   help='Path to a config file to load. Any conflicting arguments supplied will resolve in the \
-    #                       config file's favor.)
+    parser.add_argument('-c', '--config', dest='config_file', default=None,
+                        help='Path to a config file to load. Any conflicting arguments supplied will resolve in the \
+                            config file\'s favor.')
     return parser
 
 
@@ -91,7 +110,7 @@ def processCorpus(args):
 
 
 def main():
-    args = getArgParser().parse_args()
+    args = parseArgs(getArgParser())
     processCorpus(args)
 
 
