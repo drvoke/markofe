@@ -23,7 +23,7 @@ def loadTextFile(filename):
 def parseArgs(parser):
     args = parser.parse_args()
     if args.config_file:
-        args = parser.parse_args(loadTextFile(args.config_file).splitlines(), namespace=args)
+        parser.parse_args(loadTextFile(args.config_file).splitlines(), namespace=args)
     print args
     return args
     
